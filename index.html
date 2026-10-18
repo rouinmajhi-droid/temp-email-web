@@ -11,7 +11,7 @@
         h2 { text-align: center; margin-bottom: 15px; color: #38bdf8; font-size: 20px; }
         .box { background-color: #0f172a; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155; }
         label { display: block; margin-bottom: 8px; font-size: 14px; color: #94a3b8; }
-        input[type="number"] { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: #fff; margin-bottom: 10px; font-size: 15px; }
+        input[type="number"] { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: #fff; margin-bottom: 10px; font-size: 15px; outline: none; }
         button { width: 100%; padding: 11px; background-color: #0284c7; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 5px; }
         button:hover { background-color: #0369a1; }
         .key-display { word-break: break-all; font-family: monospace; color: #22c55e; background: #1e293b; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 13px; border: 1px dashed #22c55e; display: flex; justify-content: space-between; align-items: center; }
@@ -47,21 +47,21 @@
     </div>
 
     <script>
-        // Aapka local server URL
+        // Aapka Local Termux Server Link Here
         const API_BASE = 'http://127.0.0.1:5000';
 
-        // Website ke andar hi API Key generate karne ka function
+        // Website par hi API Key generate karne ka function
         function generateApiKey() {
             const keyBox = document.getElementById('keyBox');
             const keyValue = document.getElementById('keyValue');
             
-            // Random unique API key website par hi ban jayegi
-            const randomKey = 'rabin_web_key_' + Math.random().toString(36.substring(2) + Date.now().toString(36);
+            // Random unique API key generate hogi
+            const randomKey = 'rabin_web_key_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
             
             keyBox.style.display = 'flex';
             keyValue.innerText = randomKey;
             
-            // LocalStorage mein save kar lenge taaki yaad rahe
+            // LocalStorage mein save kar rahe hain
             localStorage.setItem('bot_api_key', randomKey);
         }
 
@@ -72,7 +72,7 @@
             });
         }
 
-        // Website se server par request bhej kar emails generate karna
+        // Website se Local Server par request bhej kar emails generate karna
         async function generateEmailsFromWebsite() {
             const count = document.getElementById('count').value;
             const emailList = document.getElementById('emailList');
@@ -86,17 +86,16 @@
 
             emailList.innerHTML = '';
             status.style.color = '#38bdf8';
-            status.innerText = 'Server se email generate ho rahe hain...';
+            status.innerText = 'Local server se email generate ho rahe hain...';
 
             try {
-                // Aapke purane local server wale endpoint par request jayegi
+                // Termux Local Server (/generate) par request ja rahi hai
                 const response = await fetch(`${API_BASE}/generate?count=${count}`);
                 const data = await response.json();
 
                 status.style.color = '#22c55e';
                 status.innerText = `Success! ${data.generated.length} emails mil gaye.`;
 
-                data.generated.excluded = true;
                 data.generated.forEach((email) => {
                     const div = document.createElement('div');
                     div.className = 'item';
@@ -109,7 +108,7 @@
 
             } catch (err) {
                 status.style.color = '#ef4444';
-                status.innerText = 'Error: Local server connect nahi ho pa raha!';
+                status.innerText = 'Error: Local server connect nahi ho pa raha! (Termux mein python app.py check karein)';
             }
         }
 
