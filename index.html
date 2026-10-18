@@ -14,8 +14,8 @@
         input[type="number"] { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: #fff; margin-bottom: 10px; font-size: 15px; outline: none; }
         button { width: 100%; padding: 11px; background-color: #0284c7; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 5px; }
         button:hover { background-color: #0369a1; }
-        .key-display { word-break: break-all; font-family: monospace; color: #22c55e; background: #1e293b; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 13px; border: 1px dashed #22c55e; display: flex; justify-content: space-between; align-items: center; }
-        .copy-btn { width: auto; padding: 5px 10px; background-color: #10b981; font-size: 12px; border-radius: 4px; margin-left: 8px; }
+        .key-display { word-break: break-all; font-family: monospace; color: #22c55e; background: #1e293b; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 12px; border: 1px dashed #22c55e; display: flex; justify-content: space-between; align-items: center; }
+        .copy-btn { width: auto; padding: 5px 10px; background-color: #10b981; font-size: 12px; border-radius: 4px; margin-left: 8px; cursor: pointer; border: none; color: white; font-weight: bold; }
         .list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; }
         .item { background-color: #1e293b; padding: 8px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; font-size: 13px; }
     </style>
@@ -23,19 +23,19 @@
 <body>
 
     <div class="card">
-        <h2>📧 Website API & Email Generator</h2>
+        <h2>📧 Pro API & Email Generator</h2>
 
-        <!-- Section 1: API Key Generator -->
+        <!-- Section 1: Pro API Key Generator -->
         <div class="box">
-            <label>Apni Website ki API Key Generate Karein:</label>
-            <button onclick="generateApiKey()" style="background-color: #10b981;">Generate API Key</button>
+            <label>Professional AI-Style API Key:</label>
+            <button onclick="generateApiKey()" style="background-color: #10b981;">Generate Pro API Key</button>
             <div id="keyBox" style="display:none;" class="key-display">
                 <span id="keyValue"></span>
-                <button class="copy-btn" onclick="copyKey()">Copy Key</button>
+                <button class="copy-btn" onclick="copyKey()">Copy</button>
             </div>
         </div>
 
-        <!-- Section 2: Email Generator Box for Bot/User -->
+        <!-- Section 2: Email Generator -->
         <div class="box">
             <label for="count">Kitne Emails Generate Karne Hain?</label>
             <input type="number" id="count" value="5" min="1" max="50">
@@ -47,32 +47,33 @@
     </div>
 
     <script>
-        // Aapka Local Termux Server Link Here
+        // NOTE: Vercel par chalane ke liye yahan Termux ka Localtunnel link dalein (jaise 'https://xxxx.loca.lt')
+        // Agar apne phone par local file khol rahe hain tab 'http://127.0.0.1:5000' chalega.
         const API_BASE = 'http://127.0.0.1:5000';
 
-        // Website par hi API Key generate karne ka function
         function generateApiKey() {
             const keyBox = document.getElementById('keyBox');
             const keyValue = document.getElementById('keyValue');
             
-            // Random unique API key generate hogi
-            const randomKey = 'rabin_web_key_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+            // Pro cryptographic random hex style API key generation
+            const randomBytes = new Uint8Array(20);
+            window.crypto.getRandomValues(randomBytes);
+            const hexString = Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
+            const proKey = 'rabin_live_' + hexString;
             
             keyBox.style.display = 'flex';
-            keyValue.innerText = randomKey;
+            keyValue.innerText = proKey;
             
-            // LocalStorage mein save kar rahe hain
-            localStorage.setItem('bot_api_key', randomKey);
+            localStorage.setItem('bot_api_key', proKey);
         }
 
         function copyKey() {
             const keyText = document.getElementById('keyValue').innerText;
             navigator.clipboard.writeText(keyText).then(() => {
-                alert('API Key Copied Successfully!');
+                alert('Pro API Key Copied Successfully!');
             });
         }
 
-        // Website se Local Server par request bhej kar emails generate karna
         async function generateEmailsFromWebsite() {
             const count = document.getElementById('count').value;
             const emailList = document.getElementById('emailList');
@@ -80,16 +81,15 @@
             const savedKey = localStorage.getItem('bot_api_key');
 
             if (!savedKey) {
-                alert('Pehle "Generate API Key" par click karke API Key banayein!');
+                alert('Pehle "Generate Pro API Key" par click karke key banayein!');
                 return;
             }
 
             emailList.innerHTML = '';
             status.style.color = '#38bdf8';
-            status.innerText = 'Local server se email generate ho rahe hain...';
+            status.innerText = 'Server se request process ho rahi hai...';
 
             try {
-                // Termux Local Server (/generate) par request ja rahi hai
                 const response = await fetch(`${API_BASE}/generate?count=${count}`);
                 const data = await response.json();
 
@@ -108,7 +108,7 @@
 
             } catch (err) {
                 status.style.color = '#ef4444';
-                status.innerText = 'Error: Local server connect nahi ho pa raha! (Termux mein python app.py check karein)';
+                status.innerText = 'Error: Server connect nahi ho pa raha! (Localtunnel link ya Termux check karein)';
             }
         }
 
